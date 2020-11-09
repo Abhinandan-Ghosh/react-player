@@ -23,6 +23,10 @@ const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
     const current = e.target.currentTime;
     const duration = e.target.duration;
     setSongInfo({ currentTime: current, duration: duration });
+    console.log(e.target.pause, isPlaying);
+    if (e.target.pause && isPlaying) {
+      audioRef.current.play();
+    }
   };
 
   //function to handle dragging of slider
