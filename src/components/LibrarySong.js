@@ -20,7 +20,7 @@ const LibrarySong = ({ songs, song, setCurrentSong, setSongs, id }) => {
       }
     });
     setSongs(newSongs);
-    console.log(newSongs);
+    // console.log(newSongs);
   };
 
   return (

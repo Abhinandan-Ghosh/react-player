@@ -23,7 +23,7 @@ const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
     const current = e.target.currentTime;
     const duration = e.target.duration;
     setSongInfo({ currentTime: current, duration: duration });
-    console.log(e.target.pause, isPlaying);
+    // console.log(e.target.pause, isPlaying);
     //check if the current song is playing and if the target is pause then play the next song clicked
     if (e.target.pause && isPlaying) {
       audioRef.current.play();
@@ -56,7 +56,7 @@ const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
         <p>{getTime(songInfo.currentTime)}</p>
         <input
           min="0"
-          max={songInfo.duration}
+          max={songInfo.duration || 0}
           value={songInfo.currentTime}
           type="range"
           onChange={dragHandler}
