@@ -24,6 +24,7 @@ const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
     const duration = e.target.duration;
     setSongInfo({ currentTime: current, duration: duration });
     console.log(e.target.pause, isPlaying);
+    //check if the current song is playing and if the target is pause then play the next song clicked
     if (e.target.pause && isPlaying) {
       audioRef.current.play();
     }

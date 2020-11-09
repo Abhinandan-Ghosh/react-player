@@ -3,7 +3,7 @@
 import React from "react";
 import LibrarySong from "./LibrarySong";
 
-const Library = ({ songs, setCurrentSong }) => {
+const Library = ({ songs, setCurrentSong, setSongs }) => {
   return (
     <div className="library">
       <h2>Library</h2>
@@ -11,8 +11,11 @@ const Library = ({ songs, setCurrentSong }) => {
       <div className="library-songs">
         {songs.map((song) => (
           <LibrarySong
+            setSongs={setSongs}
             key={song.id}
+            id={song.id}
             setCurrentSong={setCurrentSong}
+            songs={songs}
             song={song}
           />
         ))}
