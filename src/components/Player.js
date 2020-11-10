@@ -1,11 +1,36 @@
 //This component contains the player.
 //Like the time, play progress slider, play pause buttons etc to control the songs
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
-const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
+const Player = ({
+  currentSong,
+  isPlaying,
+  setIsPlaying,
+  songs,
+  setSongs,
+  setCurrentSong,
+}) => {
   const audioRef = useRef(null);
+  //useEffect
+  useEffect(() => {
+    const newSongs = songs.map((eachSong) => {
+      if (eachSong.id === currentSong.id) {
+        return {
+          ...eachSong,
+          active: true,
+        };
+      } else {
+        return {
+          ...eachSong,
+          active: false,
+        };
+      }
+    });
+    setSongs(newSongs);
+    // console.log(newSongs);
+  }, [currentSong]);
   //Event Handlers
   const playSongHandler = () => {
     // console.log(audioRef.current);
@@ -37,6 +62,21 @@ const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
 
+  //function to skip song forward or backwards using arrow icons
+  const skipTrackHandler = (direction) => {
+    const currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+    if (direction === "skip-forward") {
+      setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+    }
+    if (direction === "skip-back") {
+      if (currentIndex - 1 === -1) {
+        setCurrentSong(songs[songs.length - 1]);
+        return;
+      }
+      setCurrentSong(songs[currentIndex - 1]);
+    }
+  };
+
   //function to format the time displayed.
   const getTime = (time) => {
     return (
@@ -64,13 +104,21 @@ const Player = ({ currentSong, isPlaying, setIsPlaying }) => {
         <p>{getTime(songInfo.duration)}</p>
       </div>
       <div className="play-control">
-        <FaAngleLeft size="30" className="skip-back" />
+        <FaAngleLeft
+          size="30"
+          onClick={() => skipTrackHandler("skip-back")}
+          className="skip-back"
+        />
         {isPlaying ? (
           <FaPause onClick={playSongHandler} size="30" className="play" />
         ) : (
           <FaPlay onClick={playSongHandler} size="30" className="play" />
         )}
-        <FaAngleRight size="30" className="skip-forward" />
+        <FaAngleRight
+          size="30"
+          onClick={() => skipTrackHandler("skip-forward")}
+          className="skip-forward"
+        />
       </div>
       <audio
         onTimeUpdate={timeUpdateHandler}
