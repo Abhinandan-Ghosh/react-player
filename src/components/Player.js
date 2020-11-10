@@ -100,6 +100,13 @@ const Player = ({
   const trackAnim = {
     transform: `translateX(${songInfo.animationPercentage}%)`,
   };
+
+  const songEndHandler = async () => {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+    await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+
+    // console.log("song ended");
+  };
   return (
     <div className="player">
       <div className="time-control">
@@ -144,6 +151,7 @@ const Player = ({
         onLoadedMetadata={timeUpdateHandler}
         ref={audioRef}
         src={currentSong.audio}
+        onEnded={songEndHandler}
       ></audio>
     </div>
   );
