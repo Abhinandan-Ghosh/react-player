@@ -1,7 +1,7 @@
 //This component contains the player.
 //Like the time, play progress slider, play pause buttons etc to control the songs
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
 const Player = ({
@@ -11,6 +11,8 @@ const Player = ({
   songs,
   setSongs,
   setCurrentSong,
+  songInfo,
+  setSongInfo,
 }) => {
   const audioRef = useRef(null);
   //useEffect
@@ -47,7 +49,18 @@ const Player = ({
   const timeUpdateHandler = (e) => {
     const current = e.target.currentTime;
     const duration = e.target.duration;
-    setSongInfo({ currentTime: current, duration: duration });
+    //calculate percentage
+    const roundedCurrent = Math.round(current);
+    const roundedDuration = Math.round(duration);
+    const animationPercentage = Math.round(
+      (roundedCurrent / roundedDuration) * 100
+    );
+    // console.log(animationPercentage);
+    setSongInfo({
+      currentTime: current,
+      duration: duration,
+      animationPercentage: animationPercentage,
+    });
     // console.log(e.target.pause, isPlaying);
     //check if the current song is playing and if the target is pause then play the next song clicked
     if (e.target.pause && isPlaying) {
@@ -83,25 +96,31 @@ const Player = ({
       Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
     );
   };
-
-  //State to get song time information
-  const [songInfo, setSongInfo] = useState({
-    currentTime: 0,
-    duration: 0,
-  });
-
+  //add the styles
+  const trackAnim = {
+    transform: `translateX(${songInfo.animationPercentage}%)`,
+  };
   return (
     <div className="player">
       <div className="time-control">
         <p>{getTime(songInfo.currentTime)}</p>
-        <input
-          min="0"
-          max={songInfo.duration || 0}
-          value={songInfo.currentTime}
-          type="range"
-          onChange={dragHandler}
-        />
-        <p>{getTime(songInfo.duration)}</p>
+        <div
+          className="track"
+          style={{
+            background: `linear-gradient(to right, ${currentSong.color[0]},${currentSong.color[1]})`,
+          }}
+        >
+          <input
+            min="0"
+            max={songInfo.duration || 0}
+            value={songInfo.currentTime}
+            type="range"
+            onChange={dragHandler}
+          />
+          <div style={trackAnim} className="animate-track"></div>
+        </div>
+
+        <p>{songInfo.duration ? getTime(songInfo.duration) : "0:00"}</p>
       </div>
       <div className="play-control">
         <FaAngleLeft
