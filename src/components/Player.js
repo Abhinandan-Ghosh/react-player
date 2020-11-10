@@ -1,7 +1,7 @@
 //This component contains the player.
 //Like the time, play progress slider, play pause buttons etc to control the songs
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
 const Player = ({
@@ -15,10 +15,10 @@ const Player = ({
   setSongInfo,
 }) => {
   const audioRef = useRef(null);
-  //useEffect
-  useEffect(() => {
+
+  const activeLibraryHandler = (nextPrev) => {
     const newSongs = songs.map((eachSong) => {
-      if (eachSong.id === currentSong.id) {
+      if (eachSong.id === nextPrev.id) {
         return {
           ...eachSong,
           active: true,
@@ -31,8 +31,7 @@ const Player = ({
       }
     });
     setSongs(newSongs);
-    // console.log(newSongs);
-  }, [currentSong]);
+  };
   //Event Handlers
   const playSongHandler = () => {
     // console.log(audioRef.current);
@@ -80,13 +79,16 @@ const Player = ({
     const currentIndex = songs.findIndex((song) => song.id === currentSong.id);
     if (direction === "skip-forward") {
       setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+      activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
     }
     if (direction === "skip-back") {
       if (currentIndex - 1 === -1) {
         setCurrentSong(songs[songs.length - 1]);
+        activeLibraryHandler(songs[songs.length - 1]);
         return;
       }
       setCurrentSong(songs[currentIndex - 1]);
+      activeLibraryHandler(songs[currentIndex - 1]);
     }
   };
 
@@ -104,6 +106,7 @@ const Player = ({
   const songEndHandler = async () => {
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
     await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+    activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
 
     // console.log("song ended");
   };
